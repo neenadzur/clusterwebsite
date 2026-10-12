@@ -2572,10 +2572,10 @@ html, body { background: var(--color-bg); }
   }
 
   var DEPT_COLORS = {
-    "Psychological & Brain Sciences": "#00A651",
-    "Thayer School of Engineering": "#1E6FE0",
-    "Geisel School of Medicine": "#F2780C",
-    "Cognitive Science & Interdisciplinary": "#9B3FD1"
+    "Psychological & Brain Sciences": "#2EB82E",
+    "Thayer School of Engineering": "#00A8E8",
+    "Geisel School of Medicine": "#E6007E",
+    "Cognitive Science & Interdisciplinary": "#FF8A00"
   };
 
   function deptColor(dept) { return DEPT_COLORS[deptBucket(dept)]; }
@@ -2631,31 +2631,24 @@ html, body { background: var(--color-bg); }
     nodes.forEach(function (n) {
       var d = deg[n.id] || 0;
       n.degree = d;
-      n.r = Math.max(6, Math.min(13, 6 + d * 0.35));
+      n.r = 10; // same size for every lab
     });
   }
 
+  // Four equal-sized department circles in a 2x2 block, largest department first.
   function deptCenters() {
     var counts = {};
     nodes.forEach(function (n) { var k = deptBucket(n.dept); counts[k] = (counts[k] || 0) + 1; });
     var keys = Object.keys(counts).sort(function (a, b) { return counts[b] - counts[a]; });
+    var gap = 56, vgap = 52; // vgap leaves room for the labels above the lower row
+    var r = Math.max(60, Math.min(132, (height - 2 * vgap - 20) / 4, (width * 0.9 - gap) / 4));
+    var cx = width / 2, cy = height / 2 + 8;
+    var dx = r + gap / 2, dy = r + vgap / 2;
+    var spots = [[-dx, -dy], [dx, -dy], [-dx, dy], [dx, dy]];
     var centers = {};
-    var radii = keys.map(function (k) { return 25 * Math.sqrt(counts[k]) + 28; }); // cluster border radius
-    var gap = 70;
-    var rs = keys.length > 1 ? Math.max.apply(null, radii.slice(1)) : 0;
-    var total = 2 * radii[0] + (keys.length > 1 ? gap + 2 * rs : 0);
-    var x0 = Math.max(radii[0], (width - total) / 2 + radii[0]);
-    var vgap = 40; // room for each cluster's label
-    var stackH = vgap * Math.max(0, keys.length - 2);
-    for (var j = 1; j < keys.length; j++) stackH += 2 * radii[j];
-    var cursor = (height - stackH) / 2 + 12;
     keys.forEach(function (k, i) {
-      if (i === 0) {
-        centers[k] = { x: x0, y: height / 2 + 12, r: radii[0] };
-      } else {
-        centers[k] = { x: x0 + radii[0] + gap + rs, y: cursor + radii[i], r: radii[i] };
-        cursor += 2 * radii[i] + vgap;
-      }
+      var p = spots[i % 4];
+      centers[k] = { x: cx + p[0], y: cy + p[1], r: r };
     });
     return centers;
   }
