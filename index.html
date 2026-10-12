@@ -679,6 +679,16 @@ a.card:hover, .card.hoverable:hover{
 .people-list .person-role, .people-list .person-dept{ display:inline; font-size:.85rem; margin:0; }
 .people-list .person-role::after{ content:" \00b7\00a0"; color:var(--color-text-muted); font-weight:400; }
 @media (max-width:640px){ .highlights-list li{ grid-template-columns:1fr; } }
+#steering-committee .grid{ grid-template-columns:repeat(2,1fr); gap:var(--space-5); }
+#steering-committee .person-card{ display:flex; align-items:flex-start; gap:1.1rem; padding:1.1rem 1.25rem; }
+#steering-committee .person-photo{ width:80px; height:80px; }
+#steering-committee .person-card > div{ margin-top:0; min-width:0; }
+#steering-committee .person-card p{ margin:0; }
+#steering-committee .person-name{ font-size:1.2rem; line-height:1.25; }
+#steering-committee .person-role{ margin-top:.15rem; font-size:.85rem; }
+#steering-committee .person-dept{ margin-top:.1rem; font-size:.82rem; line-height:1.4; }
+#steering-committee .person-card .text-muted{ margin-top:.7rem; padding-top:.7rem; border-top:1px solid var(--color-border); font-size:.88rem !important; line-height:1.55; }
+@media (max-width:760px){ #steering-committee .grid{ grid-template-columns:1fr; } }
 .inline-figure{ margin-top: var(--space-6); }
     .inline-figure img{ border-radius: var(--radius-lg); width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border: 1px solid var(--color-border); }
     #page-events .inline-figure img{ aspect-ratio: 2 / 1; object-position: center 35%; }
