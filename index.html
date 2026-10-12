@@ -774,6 +774,13 @@ a.card:hover, .card.hoverable:hover{
     .ln-legend{ position:absolute; left: var(--space-3); bottom: var(--space-3); background: color-mix(in srgb, var(--color-surface) 90%, transparent); border:1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-3) var(--space-4); font-size:.78rem; max-width:270px; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
     .ln-legend h3{ font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; font-family:var(--font-mono); color:var(--color-text-muted); margin:0 0 .55rem; font-weight:600; }
     .ln-legend-row{ display:flex; align-items:center; gap:.5rem; margin-bottom:.32rem; color: var(--color-text); }
+    .ln-legend-btn{ appearance:none; border:0; background:transparent; font:inherit; width:100%; text-align:left; padding:.15rem .3rem; margin-left:-.3rem; border-radius:6px; cursor:pointer; }
+    .ln-legend-btn:hover, .ln-legend-btn:focus-visible{ background: color-mix(in srgb, var(--color-text) 8%, transparent); }
+    .ln-legend-btn.is-active{ background: color-mix(in srgb, var(--color-text) 12%, transparent); font-weight:700; }
+    #ln-svg .group-border{ transition: opacity var(--dur-base) var(--ease-out), stroke-width var(--dur-base) var(--ease-out); }
+    #ln-svg .group-border.is-active{ stroke-width:3.5px; stroke-dasharray:none; fill-opacity:.3 !important; stroke-opacity:1 !important; }
+    #ln-svg .group-border.is-dim{ opacity:.3; }
+    #ln-svg .group-label.is-active{ fill:var(--color-text); font-size:12.5px; }
     .ln-legend-dot{ width:10px; height:10px; border-radius:50%; flex-shrink:0; }
     .ln-legend-note{ margin-top:.6rem; padding-top:.55rem; border-top:1px solid var(--color-border); color:var(--color-text-muted); line-height:1.5; }
     @media (max-width:640px){ .ln-legend{ position:static; max-width:none; margin: var(--space-3); } }
@@ -788,6 +795,11 @@ a.card:hover, .card.hoverable:hover{
     #ln-svg .node.is-dimmed .node-circle{ opacity:.16; }
     #ln-svg .node.is-dimmed .node-label{ opacity:0; }
     #ln-svg .edge.is-dimmed{ opacity:.04; }
+    #ln-svg .edge.is-quiet{ opacity:0; }
+    #ln-svg .node:hover .node-label{ opacity:1; }
+    #ln-svg .node-label{ paint-order:stroke; stroke:var(--color-surface); stroke-width:3px; stroke-linejoin:round; }
+    #ln-svg .group-border{ fill-opacity:.07; stroke-opacity:.55; stroke-width:1.5px; stroke-dasharray:5 4; pointer-events:none; }
+    #ln-svg .group-label{ font-weight:600; paint-order:stroke; stroke:var(--color-surface); stroke-width:3px; stroke-linejoin:round; font-family:var(--font-mono); font-size:11px; letter-spacing:.08em; text-transform:uppercase; fill:var(--color-text-muted); text-anchor:middle; pointer-events:none; transition:opacity var(--dur-base) var(--ease-out); }
 
     .ln-panel{ position:fixed; right:0; top:0; bottom:0; width:min(400px, 92vw); background:var(--color-surface); border-left:1px solid var(--color-border); box-shadow: var(--shadow-lg); padding: var(--space-6) var(--space-5) var(--space-5); overflow-y:auto; z-index: 200; transform: translateX(100%); transition: transform var(--dur-slow) var(--ease-out); }
     .ln-panel.is-open{ transform: translateX(0); }
@@ -797,19 +809,26 @@ a.card:hover, .card.hoverable:hover{
     }
     .ln-panel-close{ position:absolute; top: var(--space-3); right: var(--space-3); width:36px; height:36px; border-radius:50%; border:1px solid var(--color-border); background:var(--color-bg); color:var(--color-text); font-size:1.3rem; line-height:1; cursor:pointer; display:grid; place-items:center; }
     .ln-panel-name{ font-family:var(--font-display); font-size:var(--step-2); margin-top: var(--space-2); }
-    .ln-panel-title{ color: var(--dartmouth-green); font-weight:600; font-size:.88rem; margin-top:.35rem; }
+    .ln-panel{ border-top:6px solid var(--dept, var(--dartmouth-green)); }
+    .ln-panel .eyebrow{ color:var(--dept, var(--dartmouth-green)); }
+    .ln-panel-name{ border-left:4px solid var(--dept, var(--dartmouth-green)); padding-left:.6rem; }
+    .ln-panel-title{ color: var(--dept, var(--dartmouth-green)); font-weight:600; font-size:.88rem; margin-top:.35rem; }
     .ln-panel-dept{ color:var(--color-text-muted); font-size:.85rem; margin-top:.15rem; }
     .ln-panel-focus{ margin-top: var(--space-4); font-size:.95rem; line-height:1.6; }
     .ln-panel-tags{ display:flex; flex-wrap:wrap; gap:.4rem; margin-top: var(--space-3); }
     .ln-tag-technique{ background: color-mix(in srgb, var(--neural-cyan) 14%, transparent); border-color: color-mix(in srgb, var(--neural-cyan) 35%, transparent); color: color-mix(in srgb, var(--neural-cyan) 70%, var(--color-text)); }
     .ln-tag-topic{ background: color-mix(in srgb, var(--neural-sage) 14%, transparent); border-color: color-mix(in srgb, var(--neural-sage) 35%, transparent); color: color-mix(in srgb, var(--neural-sage) 70%, var(--color-text)); }
-    .ln-panel-link{ margin-top: var(--space-5); display:inline-flex; align-items:center; gap:.4em; color:var(--dartmouth-green); font-weight:600; font-size:.9rem; }
+    .ln-panel-link{ margin-top: var(--space-5); display:inline-flex; align-items:center; gap:.4em; color:var(--dept, var(--dartmouth-green)); font-weight:600; font-size:.9rem; }
     .ln-panel-link svg{ width:1em; height:1em; }
 
     .ln-node-list-details{ margin-top: var(--space-2); }
     .ln-node-list-details summary{ cursor:pointer; font-weight:600; font-size:.85rem; color:var(--color-text-muted); padding:.4rem 0; }
     .ln-node-list-details summary:hover{ color: var(--color-text); }
     .ln-node-list{ margin-top: var(--space-2); max-height:320px; overflow-y:auto; border:1px solid var(--color-border); border-radius: var(--radius-md); }
+    #ln-panel-body:has(.ln-group-list){ display:flex; flex-direction:column; max-height:100%; }
+    .ln-panel:has(.ln-group-list){ padding-bottom: var(--space-3); }
+    .ln-group-list{ flex:0 1 auto; min-height:0; max-height:none; overflow-y:auto; }
+    @media (max-width:640px){ #ln-panel-body:has(.ln-group-list){ max-height:none; } .ln-group-list{ max-height:50vh; } }
     .ln-node-list li{ border-bottom:1px solid var(--color-border); }
     .ln-node-list li:last-child{ border-bottom:0; }
     .ln-node-list-btn{ display:block; width:100%; text-align:left; padding:.65rem .9rem; background:transparent; border:0; color:var(--color-text); font-size:.85rem; cursor:pointer; }
@@ -1275,7 +1294,7 @@ html, body { background: var(--color-bg); }
         <div>
           <span class="eyebrow">Interactive</span>
           <h2>Neuroscience Network</h2>
-          <p style="color:var(--ink-text-muted); margin-top:var(--space-3); max-width:46ch;">Explore an interactive, force-directed map of neuroscience-related labs across Dartmouth. Re-sort it by department, shared technique, or shared research topic to see how disciplines and methods connect.</p>
+          <p style="color:var(--ink-text-muted); margin-top:var(--space-3); max-width:46ch;">Explore an interactive, force-directed map of neuroscience-related labs across Dartmouth. Group it by department, shared technique or shared topic to see how disciplines and methods connect.</p>
           <a class="btn btn-glow mt-5" href="#lab-network">
             <span>Explore the Network</span>
             <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
@@ -1730,7 +1749,7 @@ html, body { background: var(--color-bg); }
       <div class="wrap-wide">
         <p class="eyebrow">Interactive &middot; Cluster Map</p>
         <h1>The Dartmouth Neuroscience Lab Network</h1>
-        <p class="lede">An interactive map of neuroscience-related labs across Dartmouth: from Psychological &amp; Brain Sciences to Thayer Engineering to Geisel Medicine. Re-sort it by department, shared technique, or shared research topic.</p>
+        <p class="lede">An interactive map of neuroscience-related labs across Dartmouth: from Psychological &amp; Brain Sciences to Thayer Engineering to Geisel Medicine. Group labs by department, shared technique or shared topic.</p>
       </div>
 
     </section>
@@ -1779,7 +1798,7 @@ html, body { background: var(--color-bg); }
       </div>
 
       <p class="ln-disclaimer" id="ln-disclaimer"></p>
-      <p class="text-muted mt-3">Click or tap a lab to open its full profile and see who it connects to. Re-sort the graph above to cluster labs by department or by shared technique/topic, and use Filters to narrow the view by tag.</p>
+      <p class="text-muted mt-3">Click or tap a lab to open its full profile and see who it connects to. Use the tabs above to regroup labs, and Filters to narrow the view by tag.</p>
     </section>
   
 </section>
@@ -2514,22 +2533,25 @@ html, body { background: var(--color-bg); }
   var currentMode = "department";
   var activeFilters = { technique: new Set(), topic: new Set() };
   var selectedId = null;
+  var groupFocus = null; // {mode, key, ids:Set} when a circle is clicked
   var width = 960, height = 640;
   var reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  var simulation, zoomLayer, edgeLayer, nodeLayer, zoomBehavior;
+  var simulation, zoomLayer, edgeLayer, nodeLayer, groupLayer, labelLayer, zoomBehavior;
 
   /* ---- Color / sizing helpers ---- */
   function cssVar(name) {
     return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
   }
 
-  function deptColor(dept) {
-    if (/Thayer/i.test(dept)) return cssVar("--neural-sage");
-    if (/Geisel/i.test(dept)) return cssVar("--neural-magenta");
-    if (/Psychological/i.test(dept)) return cssVar("--dartmouth-green");
-    return cssVar("--neural-cyan"); // Cognitive Science, Music & CS, other interdisciplinary
-  }
+  var DEPT_COLORS = {
+    "Psychological & Brain Sciences": "#00A651",
+    "Thayer School of Engineering": "#1E6FE0",
+    "Geisel School of Medicine": "#F2780C",
+    "Cognitive Science & Interdisciplinary": "#9B3FD1"
+  };
+
+  function deptColor(dept) { return DEPT_COLORS[deptBucket(dept)]; }
 
   function deptBucket(dept) {
     if (/Thayer/i.test(dept)) return "Thayer School of Engineering";
@@ -2582,33 +2604,110 @@ html, body { background: var(--color-bg); }
     nodes.forEach(function (n) {
       var d = deg[n.id] || 0;
       n.degree = d;
-      n.r = Math.max(9, Math.min(24, 9 + d * 1.8));
+      n.r = Math.max(6, Math.min(13, 6 + d * 0.35));
     });
   }
 
   function deptCenters() {
-    var buckets = {};
-    nodes.forEach(function (n) { buckets[deptBucket(n.dept)] = true; });
-    var keys = Object.keys(buckets);
+    var counts = {};
+    nodes.forEach(function (n) { var k = deptBucket(n.dept); counts[k] = (counts[k] || 0) + 1; });
+    var keys = Object.keys(counts).sort(function (a, b) { return counts[b] - counts[a]; });
     var centers = {};
-    var cx = width / 2, cy = height / 2;
-    var radius = Math.min(width, height) * 0.32;
+    var radii = keys.map(function (k) { return 25 * Math.sqrt(counts[k]) + 28; }); // cluster border radius
+    var gap = 70;
+    var rs = keys.length > 1 ? Math.max.apply(null, radii.slice(1)) : 0;
+    var total = 2 * radii[0] + (keys.length > 1 ? gap + 2 * rs : 0);
+    var x0 = Math.max(radii[0], (width - total) / 2 + radii[0]);
+    var vgap = 40; // room for each cluster's label
+    var stackH = vgap * Math.max(0, keys.length - 2);
+    for (var j = 1; j < keys.length; j++) stackH += 2 * radii[j];
+    var cursor = (height - stackH) / 2 + 12;
     keys.forEach(function (k, i) {
-      var angle = (i / keys.length) * Math.PI * 2 - Math.PI / 2;
-      centers[k] = { x: cx + Math.cos(angle) * radius, y: cy + Math.sin(angle) * radius };
+      if (i === 0) {
+        centers[k] = { x: x0, y: height / 2 + 12, r: radii[0] };
+      } else {
+        centers[k] = { x: x0 + radii[0] + gap + rs, y: cursor + radii[i], r: radii[i] };
+        cursor += 2 * radii[i] + vgap;
+      }
     });
     return centers;
   }
 
+  // Group a lab belongs to in the current tab: department, or its first-listed technique / topic.
+  function groupKey(d, mode) {
+    if (mode === "technique") return d.techniques[0] || "Other";
+    if (mode === "topic") return d.topics[0] || "Other";
+    return deptBucket(d.dept);
+  }
+
+  function tagsOf(d, mode) {
+    var t = mode === "technique" ? d.techniques : d.topics;
+    return t.length ? t : ["Other"];
+  }
+
+  // Technique / topic tabs: one circle per tag, sized by how many labs carry it. Tags that
+  // often appear together are pulled close so their circles overlap, and a lab with several
+  // tags sits in the overlap of those circles (see applyModeForces).
+  var packCache = {};
+  function packCenters(mode) {
+    var ck = mode + "|" + Math.round(width) + "|" + Math.round(height);
+    if (packCache[ck]) return packCache[ck];
+    var counts = {}, pair = {};
+    nodes.forEach(function (n) {
+      var t = tagsOf(n, mode);
+      t.forEach(function (a) { counts[a] = (counts[a] || 0) + 1; });
+      if (t.length > 1) { // a lab sits where its first two tags overlap
+        var k = [t[0], t[1]].sort().join("||");
+        pair[k] = (pair[k] || 0) + 1;
+      }
+    });
+    var circles = Object.keys(counts).map(function (k) { return { id: k, n: counts[k], r: 24 * Math.sqrt(counts[k]) + 16 }; });
+    var byId = {};
+    circles.forEach(function (c) { byId[c.id] = c; });
+    var links = Object.keys(pair).map(function (k) {
+      var p = k.split("||");
+      return { source: p[0], target: p[1], w: pair[k] };
+    });
+    var sim = d3.forceSimulation(circles)
+      .force("link", d3.forceLink(links).id(function (c) { return c.id; })
+        .distance(function (l) { return (l.source.r + l.target.r) * (1 - Math.min(0.3, 0.07 * l.w)); })
+        .strength(function (l) { return Math.min(0.5, 0.08 + l.w * 0.04); }))
+      .force("charge", d3.forceManyBody().strength(-80))
+      .force("collide", d3.forceCollide().radius(function (c) { return c.r * 0.85; }).strength(1))
+      .force("x", d3.forceX(0).strength(0.05))
+      .force("y", d3.forceY(0).strength(0.05))
+      .stop();
+    for (var i = 0; i < 400; i++) sim.tick();
+    var x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
+    circles.forEach(function (c) {
+      x0 = Math.min(x0, c.x - c.r); x1 = Math.max(x1, c.x + c.r);
+      y0 = Math.min(y0, c.y - c.r - 22); y1 = Math.max(y1, c.y + c.r);
+    });
+    var sc = Math.min(1.7, (width * 0.9) / (x1 - x0), (height * 0.94) / (y1 - y0));
+    var mx = (x0 + x1) / 2, my = (y0 + y1) / 2, centers = {};
+    circles.forEach(function (c) {
+      centers[c.id] = { x: width / 2 + (c.x - mx) * sc, y: height / 2 + (c.y - my) * sc, r: c.r * sc, n: c.n };
+    });
+    packCache[ck] = centers;
+    return centers;
+  }
+
+  function groupCenters(mode) {
+    return mode === "department" ? deptCenters() : packCenters(mode);
+  }
+
+  // Where a lab wants to sit: its department circle, or the middle of all its tag circles.
+  function nodeTarget(d, mode, centers) {
+    if (mode === "department") return centers[deptBucket(d.dept)];
+    var t = tagsOf(d, mode).slice(0, 2), sx = 0, sy = 0;
+    t.forEach(function (k) { sx += centers[k].x; sy += centers[k].y; });
+    return { x: sx / t.length, y: sy / t.length };
+  }
+
   function applyModeForces(mode) {
-    if (mode === "department") {
-      var centers = deptCenters();
-      simulation.force("x", d3.forceX(function (d) { return centers[deptBucket(d.dept)].x; }).strength(0.16));
-      simulation.force("y", d3.forceY(function (d) { return centers[deptBucket(d.dept)].y; }).strength(0.16));
-    } else {
-      simulation.force("x", d3.forceX(width / 2).strength(0.03));
-      simulation.force("y", d3.forceY(height / 2).strength(0.03));
-    }
+    var centers = groupCenters(mode);
+    simulation.force("x", d3.forceX(function (d) { return nodeTarget(d, mode, centers).x; }).strength(0.3));
+    simulation.force("y", d3.forceY(function (d) { return nodeTarget(d, mode, centers).y; }).strength(0.3));
   }
 
   /* ---- Rendering ---- */
@@ -2623,11 +2722,11 @@ html, body { background: var(--color-bg); }
     sel.exit().remove();
     var enter = sel.enter().append("line")
       .attr("class", "edge")
-      .attr("stroke-width", function (d) { return 1 + d.weight * 0.9; })
-      .attr("stroke-opacity", function (d) { return Math.min(0.55, 0.14 + d.weight * 0.12); });
+      .attr("stroke-width", function (d) { return 0.5 + d.weight * 0.45; })
+      .attr("stroke-opacity", function (d) { return Math.min(0.45, 0.05 + d.weight * 0.07); });
     enter.merge(sel)
-      .attr("stroke-width", function (d) { return 1 + d.weight * 0.9; })
-      .attr("stroke-opacity", function (d) { return Math.min(0.55, 0.14 + d.weight * 0.12); });
+      .attr("stroke-width", function (d) { return 0.5 + d.weight * 0.45; })
+      .attr("stroke-opacity", function (d) { return Math.min(0.45, 0.05 + d.weight * 0.07); });
   }
 
   function renderNodes() {
@@ -2672,6 +2771,34 @@ html, body { background: var(--color-bg); }
     d.fx = null; d.fy = null;
   }
 
+  function renderGroupLabels() {
+    var centers = groupCenters(currentMode);
+    var keys = Object.keys(centers);
+    var mode = currentMode;
+    var color = function (k) { return mode === "department" ? DEPT_COLORS[k] : tagColor(mode, k); };
+    var sel = groupLayer.selectAll("circle.group-border").data(keys, function (k) { return k; });
+    sel.exit().remove();
+    sel.enter().append("circle").attr("class", "group-border").merge(sel)
+      .attr("cx", function (k) { return centers[k].x; })
+      .attr("cy", function (k) { return centers[k].y; })
+      .attr("r", function (k) { return centers[k].r; })
+      .attr("fill", color)
+      .style("pointer-events", "all").style("cursor", "pointer")
+      .on("click", function (event, k) { selectGroup(k); })
+      .style("fill-opacity", mode === "department" ? 0.07 : 0.14)
+      .attr("stroke", color)
+      .style("stroke-opacity", mode === "department" ? 0.55 : 0.9);
+    // labels live above the dots so overlapping circles never hide them
+    var ts = labelLayer.selectAll("text.group-label").data(keys, function (k) { return k; });
+    ts.exit().remove();
+    ts.enter().append("text").attr("class", "group-label").merge(ts)
+      .style("pointer-events", "all").style("cursor", "pointer")
+      .on("click", function (event, k) { selectGroup(k); })
+      .text(function (k) { return currentMode === "department" ? k : k + " (" + centers[k].n + ")"; })
+      .attr("x", function (k) { return centers[k].x; })
+      .attr("y", function (k) { return centers[k].y - centers[k].r - 8; });
+  }
+
   function positionTick() {
     nodeLayer.selectAll("g.node")
       .attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; });
@@ -2703,8 +2830,22 @@ html, body { background: var(--color-bg); }
     return techHit || topicHit;
   }
 
+  // Circle + legend row of the group whose list is open.
+  function markActiveGroup() {
+    var key = groupFocus ? groupFocus.key : null;
+    if (groupLayer) groupLayer.selectAll("circle.group-border")
+      .classed("is-active", function (k) { return k === key; })
+      .classed("is-dim", function (k) { return key !== null && k !== key; });
+    if (labelLayer) labelLayer.selectAll("text.group-label")
+      .classed("is-active", function (k) { return k === key; });
+    if (legendEl) Array.prototype.forEach.call(legendEl.querySelectorAll(".ln-legend-btn"), function (b) {
+      b.classList.toggle("is-active", b.getAttribute("data-key") === key);
+    });
+  }
+
   function applyVisualState() {
-    var focusSet = selectedId ? connectedIds(selectedId) : null;
+    markActiveGroup();
+    var focusSet = selectedId ? connectedIds(selectedId) : (groupFocus ? groupFocus.ids : null);
 
     nodeLayer.selectAll("g.node").classed("is-dimmed", function (d) {
       if (focusSet) return !focusSet.has(d.id);
@@ -2712,7 +2853,10 @@ html, body { background: var(--color-bg); }
     }).classed("is-selected", function (d) { return d.id === selectedId; })
       .classed("is-labeled", function (d) { return d.id === selectedId || (focusSet && focusSet.has(d.id)); });
 
-    edgeLayer.selectAll("line.edge").classed("is-dimmed", function (d) {
+    var minW = 2;
+    edgeLayer.selectAll("line.edge").classed("is-quiet", function (d) {
+      return !focusSet && d.weight < minW;
+    }).classed("is-dimmed", function (d) {
       var so = typeof d.source === "object" ? d.source.id : d.source;
       var ta = typeof d.target === "object" ? d.target.id : d.target;
       if (focusSet) return !(focusSet.has(so) && focusSet.has(ta));
@@ -2737,9 +2881,11 @@ html, body { background: var(--color-bg); }
   function selectNode(id) {
     var d = nodeById[id];
     if (!d) return;
+    groupFocus = null;
     selectedId = id;
     applyVisualState();
 
+    panelEl.style.setProperty("--dept", deptColor(d.dept));
     panelBodyEl.innerHTML =
       '<p class="eyebrow">' + escapeHTML(deptBucket(d.dept)) + "</p>" +
       '<h3 class="ln-panel-name">' + escapeHTML(d.name) + "</h3>" +
@@ -2757,9 +2903,46 @@ html, body { background: var(--color-bg); }
     panelEl.classList.add("is-open");
   }
 
+  function membersOf(mode, key) {
+    return nodes.filter(function (n) {
+      return mode === "department" ? deptBucket(n.dept) === key : tagsOf(n, mode).indexOf(key) > -1;
+    });
+  }
+
+  // Clicking a circle lists every lab in it and highlights them in the graph.
+  function selectGroup(key) {
+    var mode = currentMode;
+    var members = membersOf(mode, key);
+    var color = mode === "department" ? DEPT_COLORS[key] : tagColor(mode, key);
+    selectedId = null;
+    groupFocus = { mode: mode, key: key, ids: new Set(members.map(function (n) { return n.id; })) };
+    applyVisualState();
+
+    var kind = mode === "department" ? "Department" : mode === "technique" ? "Technique" : "Topic";
+    panelEl.style.setProperty("--dept", color);
+    panelBodyEl.innerHTML =
+      '<p class="eyebrow">' + kind + "</p>" +
+      '<h3 class="ln-panel-name">' + escapeHTML(key) + "</h3>" +
+      '<p class="ln-panel-dept">' + members.length + (members.length === 1 ? " lab" : " labs") + "</p>" +
+      '<ul class="ln-node-list ln-group-list">' + members.map(function (n) {
+        return '<li><button class="ln-node-list-btn" type="button" data-id="' + escapeHTML(n.id) + '">' +
+          '<span class="ln-legend-dot" style="display:inline-block;margin-right:.5rem;background:' + deptColor(n.dept) + '"></span>' +
+          "<strong>" + escapeHTML(n.name) + "</strong><br>" +
+          '<span style="color:var(--color-text-muted)">' + escapeHTML(n.title) + "</span></button></li>";
+      }).join("") + "</ul>";
+    Array.prototype.forEach.call(panelBodyEl.querySelectorAll("button[data-id]"), function (b) {
+      b.addEventListener("click", function () { selectNode(b.getAttribute("data-id")); });
+    });
+
+    panelEl.hidden = false;
+    void panelEl.offsetHeight;
+    panelEl.classList.add("is-open");
+  }
+
   function closePanel() {
     panelEl.classList.remove("is-open");
     selectedId = null;
+    groupFocus = null;
     applyVisualState();
     window.setTimeout(function () { if (!panelEl.classList.contains("is-open")) panelEl.hidden = true; }, 260);
   }
@@ -2772,13 +2955,15 @@ html, body { background: var(--color-bg); }
     renderEdges();
     renderNodes();
     applyVisualState();
+    renderGroupLabels();
+    buildLegend();
 
     simulation.nodes(nodes);
     simulation.force("link", d3.forceLink(edges).id(function (d) { return d.id; })
-      .distance(function (d) { return 130 - d.weight * 9; })
-      .strength(function (d) { return Math.min(0.55, 0.12 + d.weight * 0.06); }));
+      .distance(function (d) { return 110 - d.weight * 6; })
+      .strength(function (d) { return 0; }));
     applyModeForces(mode);
-    simulation.force("collide", d3.forceCollide().radius(function (d) { return d.r + 8; }));
+    simulation.force("collide", d3.forceCollide().radius(function (d) { return d.r + 16; }));
 
     if (!animate) {
       simulation.stop();
@@ -2796,6 +2981,7 @@ html, body { background: var(--color-bg); }
       b.classList.toggle("is-active", isActive);
       b.setAttribute("aria-pressed", isActive ? "true" : "false");
     });
+    if (groupFocus) closePanel();
     relayout(mode, !reducedMotion);
   }
 
@@ -2853,31 +3039,58 @@ html, body { background: var(--color-bg); }
     });
   }
 
-  function buildLegend() {
-    var groups = [
-      { label: "Psychological & Brain Sciences", color: cssVar("--dartmouth-green") },
-      { label: "Thayer School of Engineering", color: cssVar("--neural-sage") },
-      { label: "Geisel School of Medicine", color: cssVar("--neural-magenta") },
-      { label: "Cognitive Science & Interdisciplinary", color: cssVar("--neural-cyan") }
-    ];
-    var rows = groups.map(function (g) {
-      return '<div class="ln-legend-row"><span class="ln-legend-dot" style="background:' + g.color + '"></span>' + escapeHTML(g.label) + "</div>";
+  var TAG_COLORS = ["#E6194B", "#2E86DE", "#F5A623", "#8E44AD", "#00A6A6", "#7CB518", "#D2457F",
+                    "#6C5B3A", "#FF6F3C", "#3B5BDB", "#2BB673", "#B8860B", "#C0392B", "#5D6D7E"];
+
+  // Colour of a technique / topic circle, stable by its position in the vocabulary.
+  function tagColor(mode, k) {
+    var vocab = mode === "technique" ? raw.techniqueVocab : raw.topicVocab;
+    var i = vocab.indexOf(k);
+    return i < 0 ? "#8A94A0" : TAG_COLORS[i % TAG_COLORS.length];
+  }
+
+  // Rows with a key are clickable and open that group's list, like clicking its circle.
+  function legendRows(items, round) {
+    return items.map(function (g) {
+      var dot = '<span class="ln-legend-dot" style="background:' + g.color + (round ? "" : ";border-radius:3px") + '"></span>';
+      return g.key
+        ? '<button type="button" class="ln-legend-row ln-legend-btn" data-key="' + escapeHTML(g.key) + '">' + dot + escapeHTML(g.label) + "</button>"
+        : '<div class="ln-legend-row">' + dot + escapeHTML(g.label) + "</div>";
     }).join("");
-    legendEl.innerHTML =
-      "<h3>Node color = department</h3>" + rows +
-      '<p class="ln-legend-note">Lines connect labs that share a technique or topic. Thicker/darker lines mean more shared tags. Node size reflects how many labs it connects to in the current view.<br><br>' +
-      escapeHTML(raw.note) + "</p>";
+  }
+
+  function buildLegend() {
+    var deptRows = function (clickable) { return Object.keys(DEPT_COLORS).map(function (k) { return { label: k, color: DEPT_COLORS[k], key: clickable ? k : null }; }); };
+    var html = "";
+    if (currentMode === "technique" || currentMode === "topic") {
+      var counts = packCenters(currentMode);
+      var vocab = currentMode === "technique" ? raw.techniqueVocab : raw.topicVocab;
+      var tags = vocab.concat(["Other"]).filter(function (k) { return counts[k]; })
+        .map(function (k) { return { label: k + " (" + counts[k].n + ")", color: tagColor(currentMode, k), key: k }; });
+      html += "<h3>Circle color = " + currentMode + "</h3>" + legendRows(tags, false) +
+        '<h3 style="margin-top:.8rem">Dot color = department</h3>' + legendRows(deptRows(false), true) +
+        '<p class="ln-legend-note">Lines connect labs that share two or more ' + currentMode + 's; darker = more.</p>';
+    } else {
+      html += "<h3>Node color = department</h3>" + legendRows(deptRows(true), true) +
+        '<p class="ln-legend-note">Lines connect labs that share two or more techniques or topics; darker = more. Hover a dot to see the lab; click it to see everyone it shares anything with.</p>';
+    }
+    legendEl.innerHTML = html;
+    Array.prototype.forEach.call(legendEl.querySelectorAll(".ln-legend-btn"), function (b) {
+      b.addEventListener("click", function () { selectGroup(b.getAttribute("data-key")); });
+    });
+    legendEl.style.maxHeight = "calc(100% - 24px)";
+    legendEl.style.overflowY = "auto";
     disclaimerEl.textContent = raw.note;
   }
 
   /* ---- Zoom / responsive ---- */
   function initZoom() {
     zoomBehavior = d3.zoom()
-      .scaleExtent([0.3, 4])
+      .scaleExtent([0.85, 1.5])
       .on("zoom", function (event) { zoomLayer.attr("transform", event.transform); });
     d3.select(svgEl).call(zoomBehavior);
     var isNarrow = window.innerWidth < 640;
-    var initialScale = isNarrow ? 0.62 : 1;
+    var initialScale = isNarrow ? 0.85 : 1;
     d3.select(svgEl).call(zoomBehavior.transform, d3.zoomIdentity.translate(width * (1 - initialScale) / 2, height * (1 - initialScale) / 2).scale(initialScale));
   }
 
@@ -2942,10 +3155,11 @@ html, body { background: var(--color-bg); }
         zoomLayer = svgSel.append("g").attr("class", "zoom-layer");
         edgeLayer = zoomLayer.append("g").attr("class", "edges");
         nodeLayer = zoomLayer.append("g").attr("class", "nodes");
+        groupLayer = zoomLayer.insert("g", ".nodes").attr("class", "group-labels");
+        labelLayer = zoomLayer.append("g").attr("class", "group-text");
 
         simulation = d3.forceSimulation(nodes)
-          .force("charge", d3.forceManyBody().strength(-240))
-          .force("center", d3.forceCenter(width / 2, height / 2))
+          .force("charge", d3.forceManyBody().strength(-120))
           .on("tick", positionTick);
 
         buildFilterChips();
@@ -2962,8 +3176,8 @@ html, body { background: var(--color-bg); }
         var lnReflow = debounce(function () {
           measure();
           svgSel.attr("viewBox", "0 0 " + width + " " + height);
-          simulation.force("center", d3.forceCenter(width / 2, height / 2));
           applyModeForces(currentMode);
+          renderGroupLabels();
           simulation.alpha(0.3).restart();
         }, 200);
         // Dedicated event (not "resize") so activating this page doesn't
