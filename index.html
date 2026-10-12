@@ -661,7 +661,13 @@ a.card:hover, .card.hoverable:hover{
     @media (max-width: 640px){ .action-item{ flex-direction: column; } }
 
     /* ---- Inline figure (DBIC facility photo) ---- */
-    .inline-figure{ margin-top: var(--space-6); }
+    .goals-list{ list-style:none; margin:0; padding:0; border-top:1px solid var(--color-border); }
+.goals-list li{ display:grid; grid-template-columns:2.2rem 15rem 1fr; gap:1rem 1.25rem; align-items:baseline; padding:.85rem 0; border-bottom:1px solid var(--color-border); }
+.goals-list .gl-num{ font-weight:700; color:var(--neural-cyan); font-variant-numeric:tabular-nums; }
+.goals-list h3{ margin:0; font-size:var(--step-0); line-height:1.3; }
+.goals-list p{ margin:0; font-size:.95rem; line-height:1.55; color:var(--color-text); }
+@media (max-width:760px){ .goals-list li{ grid-template-columns:2rem 1fr; } .goals-list p{ grid-column:2; } }
+.inline-figure{ margin-top: var(--space-6); }
     .inline-figure img{ border-radius: var(--radius-lg); width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border: 1px solid var(--color-border); }
     #page-events .inline-figure img{ aspect-ratio: 2 / 1; object-position: center 35%; }
 .inline-figure figcaption{ font-size: .85rem; color: var(--color-text-muted); margin-top: .7rem; max-width: 62ch; }
@@ -1394,64 +1400,13 @@ html, body { background: var(--color-bg); }
           <span class="eyebrow">Current Goals</span>
           <h2>Five priorities guiding the cluster's work.</h2>
         </div>
-        <div class="grid grid-3" data-reveal>
-
-          <div class="card goal-card">
-            <div class="card-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="9" cy="7" r="3.2"/><path d="M3.5 20a6 6 0 0 1 11 0"/><path d="M16.5 8.5a3 3 0 1 1 3.6 2.94M15.5 20a5.2 5.2 0 0 1 5-4"/>
-              </svg>
-            </div>
-            <div class="goal-num">Goal 01</div>
-            <h3>Faculty Hires</h3>
-            <p class="lede" style="font-size:var(--step-0);">Supporting hires who bring cutting-edge multidisciplinary computational and biological techniques to Dartmouth. An active search is underway to fill a third endowed faculty position bridging computational and systems neuroscience, further strengthening ties between human neuroimaging and animal-model circuit research.</p>
-          </div>
-
-          <div class="card goal-card">
-            <div class="card-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 3v4M12 17v4M3 12h4M17 12h4"/><circle cx="12" cy="12" r="5.2"/>
-              </svg>
-            </div>
-            <div class="goal-num">Goal 02</div>
-            <h3>Enhance Research on the Neural Code</h3>
-            <p class="lede" style="font-size:var(--step-0);">Providing seed funding for multidisciplinary, exploratory collaborations so they can become externally competitive for larger grants and awards.</p>
-          </div>
-
-          <div class="card goal-card">
-            <div class="card-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M4 19V9l8-5 8 5v10"/><path d="M9 19v-6h6v6"/>
-              </svg>
-            </div>
-            <div class="goal-num">Goal 03</div>
-            <h3>Visitors &amp; Speakers</h3>
-            <p class="lede" style="font-size:var(--step-0);">Bringing cutting-edge researchers to campus to share their work and to facilitate new collaborations beyond Dartmouth.</p>
-          </div>
-
-          <div class="card goal-card">
-            <div class="card-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="7" cy="8" r="2.6"/><circle cx="17" cy="8" r="2.6"/><path d="M2.5 19c.5-3 2.3-5 4.5-5s4 2 4.5 5M12.5 19c.5-3 2.3-5 4.5-5s4 2 4.5 5"/>
-              </svg>
-            </div>
-            <div class="goal-num">Goal 04</div>
-            <h3>Building Community</h3>
-            <p class="lede" style="font-size:var(--step-0);">Enhancing the physical and intellectual environment to foster cross-disciplinary communication among psychology, neuroscience, biology, computer science, engineering, cognitive science, biostatistics, and medicine around computational neuroscience.</p>
-          </div>
-
-          <div class="card goal-card">
-            <div class="card-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 4 3 8l9 4 9-4-9-4Z"/><path d="M6 10.5V16c0 1.4 2.7 3 6 3s6-1.6 6-3v-5.5"/>
-              </svg>
-            </div>
-            <div class="goal-num">Goal 05</div>
-            <h3>Undergraduate &amp; Graduate Education</h3>
-            <p class="lede" style="font-size:var(--step-0);">Supporting and incentivizing new courses in neuroscience that align with the cluster's mission, at both the undergraduate and graduate level.</p>
-          </div>
-
-        </div>
+        <ol class="goals-list" data-reveal>
+          <li><span class="gl-num">01</span><h3>Faculty Hires</h3><p>Supporting hires who bring cutting-edge multidisciplinary computational and biological techniques to Dartmouth. An active search is underway to fill a third endowed faculty position bridging computational and systems neuroscience, further strengthening ties between human neuroimaging and animal-model circuit research.</p></li>
+          <li><span class="gl-num">02</span><h3>Enhance Research on the Neural Code</h3><p>Providing seed funding for multidisciplinary, exploratory collaborations so they can become externally competitive for larger grants and awards.</p></li>
+          <li><span class="gl-num">03</span><h3>Visitors &amp; Speakers</h3><p>Bringing cutting-edge researchers to campus to share their work and to facilitate new collaborations beyond Dartmouth.</p></li>
+          <li><span class="gl-num">04</span><h3>Building Community</h3><p>Enhancing the physical and intellectual environment to foster cross-disciplinary communication among psychology, neuroscience, biology, computer science, engineering, cognitive science, biostatistics, and medicine around computational neuroscience.</p></li>
+          <li><span class="gl-num">05</span><h3>Undergraduate &amp; Graduate Education</h3><p>Supporting and incentivizing new courses in neuroscience that align with the cluster's mission, at both the undergraduate and graduate level.</p></li>
+        </ol>
       </div>
     </section>
 
