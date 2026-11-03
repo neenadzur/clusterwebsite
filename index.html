@@ -2775,10 +2775,14 @@ html, body { background: var(--color-bg); }
     if (packCache[ck]) return packCache[ck];
     var counts = {}, pair = {};
     nodes.forEach(function (n) {
-      var a = tagsOf(n, mode)[0]; // each lab sits in the circle of its first-listed tag
-      counts[a] = (counts[a] || 0) + 1;
+      var t = tagsOf(n, mode);
+      t.forEach(function (a) { counts[a] = (counts[a] || 0) + 1; });
+      if (t.length > 1) { // a lab sits where its first two tags overlap
+        var k = [t[0], t[1]].sort().join("||");
+        pair[k] = (pair[k] || 0) + 1;
+      }
     });
-    var circles = Object.keys(counts).map(function (k) { return { id: k, n: counts[k], r: 20 * Math.sqrt(counts[k]) + 26 }; });
+    var circles = Object.keys(counts).map(function (k) { return { id: k, n: counts[k], r: 24 * Math.sqrt(counts[k]) + 16 }; });
     var byId = {};
     circles.forEach(function (c) { byId[c.id] = c; });
     var links = Object.keys(pair).map(function (k) {
@@ -2790,7 +2794,7 @@ html, body { background: var(--color-bg); }
         .distance(function (l) { return (l.source.r + l.target.r) * (1 - Math.min(0.3, 0.07 * l.w)); })
         .strength(function (l) { return Math.min(0.5, 0.08 + l.w * 0.04); }))
       .force("charge", d3.forceManyBody().strength(-80))
-      .force("collide", d3.forceCollide().radius(function (c) { return c.r + 26; }).strength(1))
+      .force("collide", d3.forceCollide().radius(function (c) { return c.r * 0.85; }).strength(1))
       .force("x", d3.forceX(0).strength(0.05))
       .force("y", d3.forceY(0).strength(0.05))
       .stop();
@@ -2798,7 +2802,7 @@ html, body { background: var(--color-bg); }
     var x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
     circles.forEach(function (c) {
       x0 = Math.min(x0, c.x - c.r); x1 = Math.max(x1, c.x + c.r);
-      y0 = Math.min(y0, c.y - c.r - 30); y1 = Math.max(y1, c.y + c.r);
+      y0 = Math.min(y0, c.y - c.r - 22); y1 = Math.max(y1, c.y + c.r);
     });
     var sc = Math.min(1.7, (width * 0.9) / (x1 - x0), (height * 0.94) / (y1 - y0));
     var mx = (x0 + x1) / 2, my = (y0 + y1) / 2, centers = {};
@@ -2816,14 +2820,15 @@ html, body { background: var(--color-bg); }
   // Where a lab wants to sit: its department circle, or the middle of all its tag circles.
   function nodeTarget(d, mode, centers) {
     if (mode === "department") return centers[deptBucket(d.dept)];
-    var c = centers[tagsOf(d, mode)[0]];
-    return { x: c.x, y: c.y };
+    var t = tagsOf(d, mode).slice(0, 2), sx = 0, sy = 0;
+    t.forEach(function (k) { sx += centers[k].x; sy += centers[k].y; });
+    return { x: sx / t.length, y: sy / t.length };
   }
 
   function applyModeForces(mode) {
     var centers = groupCenters(mode);
-    simulation.force("x", d3.forceX(function (d) { return nodeTarget(d, mode, centers).x; }).strength(0.5));
-    simulation.force("y", d3.forceY(function (d) { return nodeTarget(d, mode, centers).y; }).strength(0.5));
+    simulation.force("x", d3.forceX(function (d) { return nodeTarget(d, mode, centers).x; }).strength(0.3));
+    simulation.force("y", d3.forceY(function (d) { return nodeTarget(d, mode, centers).y; }).strength(0.3));
   }
 
   /* ---- Rendering ---- */
@@ -2838,11 +2843,11 @@ html, body { background: var(--color-bg); }
     sel.exit().remove();
     var enter = sel.enter().append("line")
       .attr("class", "edge")
-      .attr("stroke-width", function (d) { return 0.5 + d.weight * 0.3; })
-      .attr("stroke-opacity", function (d) { return Math.min(0.3, 0.04 + d.weight * 0.05); });
+      .attr("stroke-width", function (d) { return 0.5 + d.weight * 0.45; })
+      .attr("stroke-opacity", function (d) { return Math.min(0.45, 0.05 + d.weight * 0.07); });
     enter.merge(sel)
-      .attr("stroke-width", function (d) { return 0.5 + d.weight * 0.3; })
-      .attr("stroke-opacity", function (d) { return Math.min(0.3, 0.04 + d.weight * 0.05); });
+      .attr("stroke-width", function (d) { return 0.5 + d.weight * 0.45; })
+      .attr("stroke-opacity", function (d) { return Math.min(0.45, 0.05 + d.weight * 0.07); });
   }
 
   function renderNodes() {
@@ -2901,7 +2906,7 @@ html, body { background: var(--color-bg); }
       .attr("fill", color)
       .style("pointer-events", "all").style("cursor", "pointer")
       .on("click", function (event, k) { selectGroup(k); })
-      .style("fill-opacity", mode === "department" ? 0.07 : 0.1)
+      .style("fill-opacity", mode === "department" ? 0.07 : 0.14)
       .attr("stroke", color)
       .style("stroke-opacity", mode === "department" ? 0.55 : 0.9);
     // labels live above the dots so overlapping circles never hide them
@@ -2969,7 +2974,7 @@ html, body { background: var(--color-bg); }
     }).classed("is-selected", function (d) { return d.id === selectedId; })
       .classed("is-labeled", function (d) { return d.id === selectedId || (focusSet && focusSet.has(d.id)); });
 
-    var minW = currentMode === "department" ? 4 : 2;
+    var minW = 2;
     edgeLayer.selectAll("line.edge").classed("is-quiet", function (d) {
       return !focusSet && d.weight < minW;
     }).classed("is-dimmed", function (d) {
@@ -3021,7 +3026,7 @@ html, body { background: var(--color-bg); }
 
   function membersOf(mode, key) {
     return nodes.filter(function (n) {
-      return mode === "department" ? deptBucket(n.dept) === key : tagsOf(n, mode)[0] === key;
+      return mode === "department" ? deptBucket(n.dept) === key : tagsOf(n, mode).indexOf(key) > -1;
     });
   }
 
@@ -3079,7 +3084,7 @@ html, body { background: var(--color-bg); }
       .distance(function (d) { return 110 - d.weight * 6; })
       .strength(function (d) { return 0; }));
     applyModeForces(mode);
-    simulation.force("collide", d3.forceCollide().radius(function (d) { return d.r + 7; }));
+    simulation.force("collide", d3.forceCollide().radius(function (d) { return d.r + 16; }));
 
     if (!animate) {
       simulation.stop();
@@ -3185,10 +3190,10 @@ html, body { background: var(--color-bg); }
         .map(function (k) { return { label: k + " (" + counts[k].n + ")", color: tagColor(currentMode, k), key: k }; });
       html += "<h3>Circle color = " + currentMode + "</h3>" + legendRows(tags, false) +
         '<h3 style="margin-top:.8rem">Dot color = department</h3>' + legendRows(deptRows(false), true) +
-        '<p class="ln-legend-note">Each lab sits in the group of its first-listed ' + currentMode + '. Lines connect labs that share two or more; darker = more.</p>';
+        '<p class="ln-legend-note">Lines connect labs that share two or more ' + currentMode + 's; darker = more.</p>';
     } else {
       html += "<h3>Node color = department</h3>" + legendRows(deptRows(true), true) +
-        '<p class="ln-legend-note">Only the strongest links are drawn (labs sharing four or more techniques and topics). Hover a dot to see the lab; click it to see everyone it shares anything with.</p>';
+        '<p class="ln-legend-note">Lines connect labs that share two or more techniques or topics; darker = more. Hover a dot to see the lab; click it to see everyone it shares anything with.</p>';
     }
     legendEl.innerHTML = html;
     Array.prototype.forEach.call(legendEl.querySelectorAll(".ln-legend-btn"), function (b) {
@@ -3275,7 +3280,7 @@ html, body { background: var(--color-bg); }
         labelLayer = zoomLayer.append("g").attr("class", "group-text");
 
         simulation = d3.forceSimulation(nodes)
-          .force("charge", d3.forceManyBody().strength(-30))
+          .force("charge", d3.forceManyBody().strength(-120))
           .on("tick", positionTick);
 
         buildFilterChips();
