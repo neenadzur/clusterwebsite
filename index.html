@@ -3352,7 +3352,7 @@ html, body { background: var(--color-bg); }
   function row(n){
     var nm=n.url?'<a class="ld-name" href="'+esc(n.url)+'" target="_blank" rel="noopener">'+esc(n.name)+'</a>':'<span class="ld-name">'+esc(n.name)+'</span>';
     var tags=n.techniques.map(function(t){return '<span class="ld-tag t">'+esc(t)+'</span>';}).join("")+n.topics.map(function(t){return '<span class="ld-tag p">'+esc(t)+'</span>';}).join("");
-    return '<li class="ld-row"><div>'+nm+'<span class="ld-title">'+esc(n.title)+(mode==="department"&&deptGroup(n.dept)!==n.dept?' &middot; '+esc(n.dept):(mode!=="department"?' &middot; '+esc(n.dept):""))+'</span></div><p class="ld-focus">'+esc(n.focus)+'</p><div class="ld-tags">'+tags+'</div></li>';
+    return '<li class="ld-row"><div>'+nm+'<span class="ld-title">'+esc(n.title)+(mode==="department"&&deptGroup(n.dept)!==n.dept?'; '+esc(n.dept):(mode!=="department"?'; '+esc(n.dept):""))+'</span></div><p class="ld-focus">'+esc(n.focus)+'</p><div class="ld-tags">'+tags+'</div></li>';
   }
   function render(){
     var list=D.nodes.filter(matches).sort(function(a,b){return last(a).localeCompare(last(b));});
