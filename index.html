@@ -2777,35 +2777,20 @@ html, body { background: var(--color-bg); }
   function packCenters(mode) {
     var ck = mode + "|" + Math.round(width) + "|" + Math.round(height);
     if (packCache[ck]) return packCache[ck];
-    var counts = {}, pair = {};
-    nodes.forEach(function (n) {
-      var t = tagsOf(n, mode);
-      t.forEach(function (a) { counts[a] = (counts[a] || 0) + 1; });
-      if (t.length > 1) { // a lab sits where its first two tags overlap
-        var k = [t[0], t[1]].sort().join("||");
-        pair[k] = (pair[k] || 0) + 1;
-      }
-    });
-    var circles = Object.keys(counts).map(function (k) { return { id: k, n: counts[k], r: 24 * Math.sqrt(counts[k]) + 16 }; });
-    var byId = {};
-    circles.forEach(function (c) { byId[c.id] = c; });
-    var links = Object.keys(pair).map(function (k) {
-      var p = k.split("||");
-      return { source: p[0], target: p[1], w: pair[k] };
-    });
+    var counts = {};
+    nodes.forEach(function (n) { var a = tagsOf(n, mode)[0]; counts[a] = (counts[a] || 0) + 1; });
+    // one circle per tag, holding the labs whose first-listed tag it is; circles never overlap
+    var circles = Object.keys(counts).map(function (k) { return { id: k, n: counts[k], r: 19 * Math.sqrt(counts[k]) + 18 }; });
     var sim = d3.forceSimulation(circles)
-      .force("link", d3.forceLink(links).id(function (c) { return c.id; })
-        .distance(function (l) { return (l.source.r + l.target.r) * (1 - Math.min(0.3, 0.07 * l.w)); })
-        .strength(function (l) { return Math.min(0.5, 0.08 + l.w * 0.04); }))
-      .force("charge", d3.forceManyBody().strength(-80))
-      .force("collide", d3.forceCollide().radius(function (c) { return c.r * 0.85; }).strength(1))
-      .force("x", d3.forceX(0).strength(0.05))
-      .force("y", d3.forceY(0).strength(0.05))
+      .force("charge", d3.forceManyBody().strength(-30))
+      .force("collide", d3.forceCollide().radius(function (c) { return Math.max(c.r + 16, 4.1 * (c.id.length + 5)); }).strength(1).iterations(4))
+      .force("x", d3.forceX(0).strength(0.08))
+      .force("y", d3.forceY(0).strength(0.1))
       .stop();
-    for (var i = 0; i < 400; i++) sim.tick();
+    for (var i = 0; i < 500; i++) sim.tick();
     var x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
     circles.forEach(function (c) {
-      x0 = Math.min(x0, c.x - c.r); x1 = Math.max(x1, c.x + c.r);
+      var hw = Math.max(c.r, 4.1 * (c.id.length + 5)); x0 = Math.min(x0, c.x - hw); x1 = Math.max(x1, c.x + hw);
       y0 = Math.min(y0, c.y - c.r - 22); y1 = Math.max(y1, c.y + c.r);
     });
     var sc = Math.min(1.7, (width * 0.9) / (x1 - x0), (height * 0.94) / (y1 - y0));
@@ -2824,9 +2809,7 @@ html, body { background: var(--color-bg); }
   // Where a lab wants to sit: its department circle, or the middle of all its tag circles.
   function nodeTarget(d, mode, centers) {
     if (mode === "department") return centers[deptBucket(d.dept)];
-    var t = tagsOf(d, mode).slice(0, 2), sx = 0, sy = 0;
-    t.forEach(function (k) { sx += centers[k].x; sy += centers[k].y; });
-    return { x: sx / t.length, y: sy / t.length };
+    return centers[tagsOf(d, mode)[0]];
   }
 
   function applyModeForces(mode) {
@@ -2834,11 +2817,11 @@ html, body { background: var(--color-bg); }
     simulation.force("x", d3.forceX(function (d) { return nodeTarget(d, mode, centers).x; }).strength(0.3));
     simulation.force("y", d3.forceY(function (d) { return nodeTarget(d, mode, centers).y; }).strength(0.3));
     // Department view: keep every dot inside its own department circle.
-    var clampCenters = mode === "department" ? centers : null;
+    var clampCenters = centers;
     var clamp = function () {
       if (!clampCenters) return;
       nodes.forEach(function (d) {
-        var c = clampCenters[deptBucket(d.dept)]; if (!c) return;
+        var c = mode === "department" ? clampCenters[deptBucket(d.dept)] : clampCenters[tagsOf(d, mode)[0]]; if (!c) return;
         var dx = d.x - c.x, dy = d.y - c.y, dist = Math.sqrt(dx * dx + dy * dy), max = c.r - d.r - 3;
         if (dist > max) { var k = max / dist; d.x = c.x + dx * k; d.y = c.y + dy * k; }
       });
@@ -2989,7 +2972,7 @@ html, body { background: var(--color-bg); }
     }).classed("is-selected", function (d) { return d.id === selectedId; })
       .classed("is-labeled", function (d) { return d.id === selectedId || (focusSet && focusSet.has(d.id)); });
 
-    var minW = 2;
+    var minW = currentMode === "department" ? 2 : 3;
     edgeLayer.selectAll("line.edge").classed("is-quiet", function (d) {
       return !focusSet && d.weight < minW;
     }).classed("is-dimmed", function (d) {
@@ -3203,9 +3186,9 @@ html, body { background: var(--color-bg); }
       var vocab = currentMode === "technique" ? raw.techniqueVocab : raw.topicVocab;
       var tags = vocab.concat(["Other"]).filter(function (k) { return counts[k]; })
         .map(function (k) { return { label: k + " (" + counts[k].n + ")", color: tagColor(currentMode, k), key: k }; });
-      html += "<h3>Circle color = " + currentMode + "</h3>" + legendRows(tags, false) +
+      html += "<h3>Circle = " + currentMode + "</h3>" + legendRows(tags, false) +
         '<h3 style="margin-top:.8rem">Dot color = department</h3>' + legendRows(deptRows(false), true) +
-        '<p class="ln-legend-note">Lines connect labs that share two or more ' + currentMode + 's; darker = more.</p>';
+        '<p class="ln-legend-note">Each lab sits in the circle of its first-listed ' + currentMode + '. Lines join labs sharing three or more; click a dot to see all its connections.</p>';
     } else {
       html += "<h3>Node color = department</h3>" + legendRows(deptRows(true), true) +
         '<p class="ln-legend-note">Lines connect labs that share two or more techniques or topics; darker = more. Hover a dot to see the lab; click it to see everyone it shares anything with.</p>';
