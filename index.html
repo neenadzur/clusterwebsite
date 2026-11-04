@@ -2913,7 +2913,7 @@ html, body { background: var(--color-bg); }
     ts.enter().append("text").attr("class", "group-label").merge(ts)
       .style("pointer-events", "all").style("cursor", "pointer")
       .on("click", function (event, k) { selectGroup(k); })
-      .text(function (k) { return currentMode === "department" ? k : k + " (" + centers[k].n + ")"; })
+      .text(function (k) { return k; })
       .attr("x", function (k) { return centers[k].x; })
       .attr("y", function (k) { return centers[k].y - centers[k].r - 8; });
   }
@@ -3185,7 +3185,7 @@ html, body { background: var(--color-bg); }
       var counts = packCenters(currentMode);
       var vocab = currentMode === "technique" ? raw.techniqueVocab : raw.topicVocab;
       var tags = vocab.concat(["Other"]).filter(function (k) { return counts[k]; })
-        .map(function (k) { return { label: k + " (" + counts[k].n + ")", color: tagColor(currentMode, k), key: k }; });
+        .map(function (k) { return { label: k, color: tagColor(currentMode, k), key: k }; });
       html += "<h3>Circle = " + currentMode + "</h3>" + legendRows(tags, false) +
         '<h3 style="margin-top:.8rem">Dot color = department</h3>' + legendRows(deptRows(false), true) +
         '<p class="ln-legend-note">Each lab sits in the circle of its first-listed ' + currentMode + '. Lines join labs sharing three or more; click a dot to see all its connections.</p>';
